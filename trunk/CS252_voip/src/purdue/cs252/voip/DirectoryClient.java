@@ -1,5 +1,3 @@
-package purdue.cs252.voip;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -17,7 +15,6 @@ import java.net.UnknownHostException;
 public class DirectoryClient {
 	String name = "default_user";
 	String serverIp = "127.0.0.1";
-	String myIp = "127.0.0.1";
 	int portNum = 4567;
 	
 	void joinServer(String address, int port, String myName){
@@ -30,10 +27,8 @@ public class DirectoryClient {
 			InetAddress ip = InetAddress.getByName(serverIp);
 			Socket sock = new Socket(ip, portNum);
 			PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(sock.getOutputStream())), true);
-			System.out.println(name + " " + myIp);
 			out.println("adduser");
 			out.println(name);
-			out.println(myIp);
 			sock.close();
 		}
 		catch(UnknownHostException e){
@@ -118,7 +113,7 @@ public class DirectoryClient {
 	
 	public static void main(String[] args){
 		DirectoryClient client = new DirectoryClient();
-		client.joinServer("127.0.0.1", 4567, args[0]);
+		client.joinServer("lore.cs.purdue.edu", 4567, args[0]);
 		
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		int exit = 0;
@@ -153,3 +148,4 @@ public class DirectoryClient {
 	}
 
 }
+
