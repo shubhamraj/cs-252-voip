@@ -21,20 +21,15 @@ public class VoiceCaptureClient implements Runnable {
 	
 	String SERVERIP;
 	int SERVERPORT;
-	
-	int bufferSize;
-	byte[] buffer;
 
 	Thread rec;
 	
 	public VoiceCaptureClient(final String SERVERIP, final int SERVERPORT){
+		
 		this.SERVERIP = SERVERIP;
 		this.SERVERPORT = SERVERPORT;
 		
-		// Temporary buffer to store the audio input. Used to record and play.
-		buffer = new byte[bufferSize];
-		
-		rec = new Thread(new Recorder(buffer));
+		rec = new Thread(new Recorder());
 		rec.start();
 	}
 	
@@ -44,20 +39,20 @@ public class VoiceCaptureClient implements Runnable {
 			// Retrieve the ServerName
 			InetAddress serverAddr = InetAddress.getByName(SERVERIP);
 
-			Log.d("UDP", "C: Connecting...");
+			//Log.d("UDP", "C: Connecting...");
 			/* Create new UDP-Socket */
 			DatagramSocket socket = new DatagramSocket();
 			
 			while (true) {
 				/* Create UDP-packet with
 				 * data & destination(url+port) */
-				DatagramPacket packet = new DatagramPacket(buffer, buffer.length, serverAddr, SERVERPORT);
+				DatagramPacket packet = new DatagramPacket(Recorder.buffer, Recorder.buffer.length, serverAddr, SERVERPORT);
 				/* Send out the packet */
 				socket.send(packet);
 			}
 			
 		} catch (Exception e) {
-			Log.e("UDP", "C: Error", e);
+			Log.e("UDP", "VoiceCaptureClient: Error sending UDP packets", e);
 		}
 	}
 }

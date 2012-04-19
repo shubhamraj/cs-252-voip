@@ -21,15 +21,15 @@ public class Recorder implements Runnable {
 	int channelConfig;
 	int audioFormat;
 	int bufferSize;
-	byte buffer[];
+	static byte buffer[];
 	
-	public Recorder(byte buffer[]){
+	public Recorder(){
 		
 		sampleRate = 11025;
 		channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;
 		audioFormat = AudioFormat.ENCODING_PCM_16BIT;
 		bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat);
-		this.buffer = buffer;
+		buffer = new byte[bufferSize];
 	}
 	
 	private AudioRecord recorder;
