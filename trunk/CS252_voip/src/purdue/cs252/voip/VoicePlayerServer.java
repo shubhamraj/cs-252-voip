@@ -26,6 +26,8 @@ public class VoicePlayerServer{
 		buffer = new byte[bufferSize];
 		ipAddress = ip;
 		portNumber = port;
+		
+		startRunning();
 	}
 	
 	public void stopRunning(){
