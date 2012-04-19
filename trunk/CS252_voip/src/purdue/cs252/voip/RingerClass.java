@@ -1,4 +1,4 @@
-package CS252.lab6.VOIP;
+package purdue.cs252.voip;
 
 	import java.io.BufferedReader;
 	import java.io.BufferedWriter;
