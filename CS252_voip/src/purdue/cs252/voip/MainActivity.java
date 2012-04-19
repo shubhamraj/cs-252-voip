@@ -1,7 +1,7 @@
 package purdue.cs252.voip;
 
 import java.util.LinkedList;
-
+import purdue.cs252.voip.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;

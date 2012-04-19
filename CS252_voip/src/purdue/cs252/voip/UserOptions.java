@@ -1,6 +1,6 @@
-package CS252.lab6.VOIP;
+package purdue.cs252.voip;
 
-import CS252.lab6.VOIP.R;
+import purdue.cs252.voip.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
