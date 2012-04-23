@@ -1,32 +1,31 @@
 package purdue.cs252.voip;
 
-import java.util.LinkedList;
-import purdue.cs252.voip.R;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
+
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioRecord;
-import android.media.AudioTrack;
-import android.media.MediaRecorder;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.util.Log;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
 	Button recordButton;
 	Button settingsButton;
 	boolean clicked;
+	VoiceCaptureClient captureClient;
+	VoicePlayerServer playerServer;
 	
 	String[] values = new String[]{"Jaya", "Brian", "Cole", "Nick", "Farrukh"};
 	//private LinkedList<Contact> contactList = new LinkedList<Contact>();
@@ -43,6 +42,9 @@ public class MainActivity extends Activity {
 
 			public void onItemClick(AdapterView<?> arg0, View view, int pos,
 					long id) {
+				captureClient = new VoiceCaptureClient("10.184.104.69", 20000);
+				new Thread(captureClient).start();
+				playerServer = new VoicePlayerServer("128.210.246.105", 20000);
 				Toast.makeText(getApplicationContext(), "Click ListItem Number " + pos, Toast.LENGTH_SHORT).show();
 				
 			}
@@ -78,6 +80,23 @@ public class MainActivity extends Activity {
 	private void openOptions(){
 		Intent launchOptions = new Intent(getApplicationContext(),UserOptions.class);
 		startActivity(launchOptions);
+	}
+	
+	public String getLocalIpAddress() {
+	    try {
+	        for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+	            NetworkInterface intf = en.nextElement();
+	            for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+	                InetAddress inetAddress = enumIpAddr.nextElement();
+	                if (!inetAddress.isLoopbackAddress()) {
+	                    return inetAddress.getHostAddress().toString();
+	                }
+	            }
+	        }
+	    } catch (SocketException ex) {
+	        //Log.e(LOG_TAG, ex.toString());
+	    }
+	    return null;
 	}
 	
 
