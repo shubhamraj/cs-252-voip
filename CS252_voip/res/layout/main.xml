@@ -40,4 +40,14 @@
         android:startColor="#F7D358"
         android:text="Settings" />
 
+    <Button
+        android:id="@+id/callTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/settings"
+        android:layout_alignLeft="@+id/settings"
+        android:layout_alignRight="@+id/settings"
+        android:layout_marginBottom="15dp"
+        android:text="Direct Call Test" />
+
 </RelativeLayout>
