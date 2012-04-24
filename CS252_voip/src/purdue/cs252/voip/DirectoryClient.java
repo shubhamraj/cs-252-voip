@@ -13,17 +13,21 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import android.util.Log;
+
 
 public class DirectoryClient {
-	String name = "default_user";
-	String serverIp = "127.0.0.1";
-	int portNum = 4567;
-	
-	void joinServer(String address, int port, String myName){
+	static String name = "default_user";
+	static String serverIp = "127.0.0.1";
+	static int portNum = 4567;
+	public static boolean joinedServer = false;
+	public static void joinServer(String address, int port, String myName){
 		//connect to a server and set values
 		serverIp = address;
 		portNum = port;
 		name = myName;
+		Log.d("DEBUG", "ip = " + serverIp + "port = " + portNum + "name = " + name);
+		joinedServer = true;
 		try{
 			//connect to the server and send an "adduser" command
 			InetAddress ip = InetAddress.getByName(serverIp);
@@ -34,16 +38,17 @@ public class DirectoryClient {
 			sock.close();
 		}
 		catch(UnknownHostException e){
-			System.err.println("TCP EXCEPTION");
+			Log.d("Unknown Host", "Unknown Host");
 		}
 		catch(IOException e){
-			System.err.println("IO EXCEPTION");
+			Log.d("IO EXCEPTION", "IO EXCEPTION");
 		}
 	}
 	
-	void leaveServer(){
+	public static void leaveServer(){
 		try{
 			//connect to a server and send 
+			joinedServer = false;
 			InetAddress ip = InetAddress.getByName(serverIp);
 			Socket sock = new Socket(ip, portNum);
 			PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(sock.getOutputStream())), true);
@@ -59,7 +64,7 @@ public class DirectoryClient {
 		}
 	}
 	
-	String lookupIp(String hostName)
+	public static String lookupIp(String hostName)
 	{
 		System.out.println("looking up " + hostName);
 		try{
@@ -85,7 +90,7 @@ public class DirectoryClient {
 		}
 	}
 	
-	String[] getUserList(){
+	public static String[] getUserList(){
 		try{
 			InetAddress ip = InetAddress.getByName(serverIp);
 			Socket sock = new Socket(ip, portNum);
@@ -111,43 +116,6 @@ public class DirectoryClient {
 		}
 	}
 	
-	
-	
-	public static void main(String[] args){
-		DirectoryClient client = new DirectoryClient();
-		client.joinServer("lore.cs.purdue.edu", 4567, args[0]);
-		
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		int exit = 0;
-		while(exit ==0){
-			try{
-				String line = in.readLine();
-				if(line.equals("exit"))
-					exit = 1;
-				else if(line.contains("lookup")){
-					String[] s = line.split(" ");
-					String ip = client.lookupIp(s[1]);
-					System.out.println("Address of " + s[1] + " : " + ip);
-				}
-				else if(line.contains("list")){
-					String[] list = client.getUserList();
-					System.out.println("\nUser List:");
-					for(String s : list)
-						System.out.println(s);
-					System.out.println();
-				}
-			}
-			catch(IOException e){}
-			
-		}
-		
-		client.leaveServer();
-		
-			
-		
-		
-		
-	}
 
 }
 
