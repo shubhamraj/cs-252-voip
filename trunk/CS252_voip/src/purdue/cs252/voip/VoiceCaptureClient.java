@@ -19,6 +19,7 @@ import android.util.Log;
 
 public class VoiceCaptureClient implements Runnable {
 	
+	static boolean running;
 	String SERVERIP;
 	int SERVERPORT;
 
@@ -28,11 +29,13 @@ public class VoiceCaptureClient implements Runnable {
 		
 		this.SERVERIP = SERVERIP;
 		this.SERVERPORT = SERVERPORT;
-		
+		running = true;
 		rec = new Thread(new Recorder());
 		rec.start();
 	}
-	
+	public void setStop(){
+		running = false;
+	}
 	@Override
 	public void run() {
 		try {
@@ -43,7 +46,7 @@ public class VoiceCaptureClient implements Runnable {
 			/* Create new UDP-Socket */
 			DatagramSocket socket = new DatagramSocket();
 			
-			while (true) {
+			while (running) {
 				/* Create UDP-packet with
 				 * data & destination(url+port) */
 				DatagramPacket packet = new DatagramPacket(Recorder.buffer, Recorder.buffer.length, serverAddr, SERVERPORT);

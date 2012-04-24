@@ -26,6 +26,10 @@ public class MainActivity extends Activity {
 
 	Button recordButton;
 	Button settingsButton;
+	
+	//following button is for testing only
+	Button testButton; Intent testPage;
+	
 	boolean clicked;
 	DirectoryClient client;
 	UserOptions settings;
@@ -53,6 +57,11 @@ public class MainActivity extends Activity {
 			}
 			
 		});
+		//following 2 lines are for testing only
+		testButton = (Button)findViewById(R.id.callTest);
+		testPage = new Intent(getApplicationContext(),DirectLinkTest.class);
+
+		
 		setOnClickListeners();
 		
 			
@@ -81,6 +90,14 @@ public class MainActivity extends Activity {
 				//go to setting menu
 				openOptions();	
 				
+			}
+		});
+		
+		testButton.setOnClickListener(new View.OnClickListener() {
+			
+			public void onClick(View v) {
+				
+				startActivity(testPage);
 			}
 		});
 	}

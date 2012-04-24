@@ -17,22 +17,20 @@ import android.media.MediaRecorder;
 
 public class Recorder implements Runnable {
 
-	int sampleRate;
-	int channelConfig;
-	int audioFormat;
+	private AudioRecord recorder;
+	int sampleRate = AudioFormat.ENCODING_DEFAULT;// 11025;
+	int channelConfig = AudioFormat.CHANNEL_CONFIGURATION_DEFAULT;//CHANNEL_CONFIGURATION_MONO;
+	int audioFormat = AudioFormat.ENCODING_DEFAULT;//ENCODING_PCM_16BIT;
 	int bufferSize;
 	static byte buffer[];
 	
+	
 	public Recorder(){
-		
-		sampleRate = 11025;
-		channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;
-		audioFormat = AudioFormat.ENCODING_PCM_16BIT;
 		bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat);
 		buffer = new byte[bufferSize];
 	}
 	
-	private AudioRecord recorder;
+	
 
 	@Override
 	public void run() {
@@ -44,7 +42,7 @@ public class Recorder implements Runnable {
 		recorder.startRecording();
 
 		// Loop forever recording input
-		while (true) {
+		while (VoiceCaptureClient.running) {
 			// Read from the microphone
 			recorder.read(buffer, 0, bufferSize);
 		}
