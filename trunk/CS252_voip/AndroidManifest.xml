@@ -7,6 +7,7 @@
     <uses-sdk android:minSdkVersion="4" />
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
     <application
@@ -22,6 +23,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".UserOptions"
+        android.label="@string/app_name"
+        ></activity>
+        <activity android:name=".DirectLinkTest"
         android.label="@string/app_name"
         ></activity>
     </application>
