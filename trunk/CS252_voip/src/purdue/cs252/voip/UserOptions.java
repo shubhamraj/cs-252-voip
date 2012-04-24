@@ -70,7 +70,7 @@ public class UserOptions extends Activity{
 			public void onClick(View v) {
 				userIdText = userId.getText().toString();
 				ipText = ip.getText().toString();
-				if(getPort() == 0){
+				if(Integer.parseInt(port.getText().toString()) == 0){
 				}
 				else{
 				portText = Integer.parseInt(port.getText().toString());
@@ -79,7 +79,7 @@ public class UserOptions extends Activity{
 				editor.putString("userIdText", userIdText);
 				editor.putString("ipText", ipText);
 				editor.commit();
-				
+				DirectoryClient.joinServer(getIp(), getPort(), getUserId());
 			}
 		});
 		
