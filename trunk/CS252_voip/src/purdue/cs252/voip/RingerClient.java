@@ -27,7 +27,7 @@ public class RingerClient{
 			Log.d("TCP", "C: Sending a packet.");
 			PrintWriter out = new PrintWriter(new BufferedWriter(
 					new OutputStreamWriter(clientSocket.getOutputStream())), true);
-			//out.println("Hello from Client");
+			out.println("Hello from Client");
 			Log.d("TCP", "C: Sent.");
 			Log.d("TCP", "C: Done.");
 

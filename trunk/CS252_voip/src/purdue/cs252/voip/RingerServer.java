@@ -24,9 +24,9 @@ public class RingerServer implements Runnable {
 				do {
 					// Wait for an incoming connection
 					Log.d("TCP", "S: Waiting for new connection...");
+					
 					Socket clientSocket = server.accept();
 					Log.d("TCP", "S: New connection received.");
-
 					// Read data from the client
 					InputStream stream = clientSocket.getInputStream();
 					// InputStream is an abstract class. We needed to use a subclass
