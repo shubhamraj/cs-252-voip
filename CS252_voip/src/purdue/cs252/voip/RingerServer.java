@@ -7,13 +7,14 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import android.content.Intent;
 import android.util.Log;
 
 public class RingerServer implements Runnable { 
 
 		public String SERVERIP; 
-		
-		public static int SERVERPORT = 5678;
+		public static int SERVERPORT = 20000;
+		MainActivity temp = new MainActivity();
 
 		//@Override
 		public void run() {
@@ -27,6 +28,7 @@ public class RingerServer implements Runnable {
 					Log.d("TCP", "S: Waiting for new connection...");
 					
 					Socket clientSocket = server.accept();
+					temp.display();
 					Log.d("TCP", "S: New connection received.");
 					// Read data from the client
 					InputStream stream = clientSocket.getInputStream();
