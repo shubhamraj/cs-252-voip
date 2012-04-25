@@ -29,6 +29,9 @@
         <activity android:name=".DirectLinkTest"
         android.label="@string/app_name"
         ></activity>
+        <activity android:name=".CallScreen"
+        android.label="@string/app_name"
+        ></activity>
     </application>
 
 </manifest>
