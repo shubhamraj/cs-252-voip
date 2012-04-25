@@ -14,10 +14,9 @@ import purdue.cs252.voip.RingerServer;
 import android.util.Log;
 
 public class RingerClient{
-
 	//@Override
 	
-	public void start(String ipAddress) {
+	public void start(String ipAddress, String username) {
 		try {
 			InetAddress serverAddr = InetAddress.getByName(ipAddress);
 
@@ -29,7 +28,7 @@ public class RingerClient{
 			Log.d("TCP", "C: Sending a packet.");
 			PrintWriter out = new PrintWriter(new BufferedWriter(
 					new OutputStreamWriter(clientSocket.getOutputStream())), true);
-			out.println("Hello from Client");
+			out.println(username);
 			
 			Log.d("TCP", "C: Sent.");
 			Log.d("TCP", "C: Done.");

@@ -68,7 +68,7 @@ public class MainActivity extends Activity {
 				//rserv.SERVERPORT = settings.getPort();
 				Log.d("SERVERIP", ipAddress);
 				RingerClient ringerClient = new RingerClient();
-				ringerClient.start(ipAddress);
+				ringerClient.start(ipAddress, settings.getUserId());
 				
 			}
 			
