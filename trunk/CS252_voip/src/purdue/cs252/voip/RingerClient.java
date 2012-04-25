@@ -1,7 +1,10 @@
 package purdue.cs252.voip;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -29,6 +32,14 @@ public class RingerClient{
 			PrintWriter out = new PrintWriter(new BufferedWriter(
 					new OutputStreamWriter(clientSocket.getOutputStream())), true);
 			out.println(username);
+			
+			InputStream stream = clientSocket.getInputStream();
+
+			BufferedReader data = new BufferedReader(new InputStreamReader(stream));
+			
+			String callAction = data.readLine();
+			
+			Log.d("CallAction", callAction);
 			
 			Log.d("TCP", "C: Sent.");
 			Log.d("TCP", "C: Done.");

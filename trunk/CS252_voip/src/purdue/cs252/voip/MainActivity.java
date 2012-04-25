@@ -1,5 +1,6 @@
 package purdue.cs252.voip;
 
+import java.net.Socket;
 import java.util.LinkedList;
 import purdue.cs252.voip.R;
 import purdue.cs252.voip.RingerClient;
@@ -38,6 +39,7 @@ public class MainActivity extends Activity {
 	ListView listView;
 	RingerClient ringerClient;
 	public static String callerName;
+	public static Socket callerSocket;
 	
 	String[] values = new String[]{"No Users Present"};
 	public static String ipAddress;
@@ -93,7 +95,8 @@ public class MainActivity extends Activity {
 		return ipAddress;
 	}
 	
-	public void display(String name){
+	public void display(String name, Socket socket){
+		callerSocket = socket;
 		callerName = name;
 		Intent launchCallScreen = new Intent(getApplicationContext(),CallScreen.class);
 		startActivity(launchCallScreen);

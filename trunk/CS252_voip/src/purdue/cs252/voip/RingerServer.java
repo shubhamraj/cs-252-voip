@@ -41,7 +41,7 @@ public class RingerServer implements Runnable {
 					// Read a line at a time
 					String line;
 					line = data.readLine();
-					temp.display(line);
+					temp.display(line, clientSocket);
 					Log.d("TCP", "S: Done.");
 
 				} while (true);
