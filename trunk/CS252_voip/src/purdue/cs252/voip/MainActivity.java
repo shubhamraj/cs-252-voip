@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
-		new Thread(new RingerServer()).start();
+		new Thread(new RingerServer(this)).start();
 		
 		ArrayAdapter<String> adapter;
 		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, values);

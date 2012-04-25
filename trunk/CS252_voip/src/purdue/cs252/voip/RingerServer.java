@@ -14,7 +14,11 @@ public class RingerServer implements Runnable {
 
 		public String SERVERIP; 
 		public static int SERVERPORT = 20000;
-		MainActivity temp = new MainActivity();
+		MainActivity temp;
+		
+		public RingerServer(MainActivity activity){
+			temp = activity;
+		}
 
 		//@Override
 		public void run() {
