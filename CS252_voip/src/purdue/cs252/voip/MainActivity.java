@@ -38,10 +38,10 @@ public class MainActivity extends Activity {
 	UserOptions settings;
 	ListView listView;
 	RingerClient ringerClient;
+	public static String callerName;
 	
 	String[] values = new String[]{"No Users Present"};
 	public static String ipAddress;
-	public static String callerName;
 	//private LinkedList<Contact> contactList = new LinkedList<Contact>();
 
 	/** Called when the activity is first created. */
@@ -64,7 +64,6 @@ public class MainActivity extends Activity {
 					long id) {
 				//Toast.makeText(getApplicationContext(), "Click ListItem Number " + pos, Toast.LENGTH_SHORT).show();4
 				ipAddress = DirectoryClient.lookupIp(arg0.getItemAtPosition(pos).toString());
-				callerName = arg0.getItemAtPosition(pos).toString();
 				
 				//rserv.SERVERPORT = settings.getPort();
 				Log.d("SERVERIP", ipAddress);
@@ -94,7 +93,8 @@ public class MainActivity extends Activity {
 		return ipAddress;
 	}
 	
-	public void display(){
+	public void display(String name){
+		callerName = name;
 		Intent launchCallScreen = new Intent(getApplicationContext(),CallScreen.class);
 		startActivity(launchCallScreen);
 	}
