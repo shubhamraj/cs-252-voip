@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
 
 import purdue.cs252.voip.RingerServer;
@@ -22,7 +24,7 @@ public class RingerClient{
 			// Connect to the server
 			Log.d("TCP", "C: Connecting to " + ipAddress);
 			Socket clientSocket = new Socket(serverAddr, RingerServer.SERVERPORT);
-		
+
 			// Sending a message to the server
 			Log.d("TCP", "C: Sending a packet.");
 			PrintWriter out = new PrintWriter(new BufferedWriter(

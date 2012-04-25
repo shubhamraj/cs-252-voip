@@ -41,6 +41,7 @@ public class MainActivity extends Activity {
 	
 	String[] values = new String[]{"No Users Present"};
 	public static String ipAddress;
+	public static String callerName;
 	//private LinkedList<Contact> contactList = new LinkedList<Contact>();
 
 	/** Called when the activity is first created. */
@@ -51,9 +52,6 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.main);
 		
 		new Thread(new RingerServer()).start();
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) { }
 		
 		ArrayAdapter<String> adapter;
 		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, values);
@@ -66,6 +64,8 @@ public class MainActivity extends Activity {
 					long id) {
 				//Toast.makeText(getApplicationContext(), "Click ListItem Number " + pos, Toast.LENGTH_SHORT).show();4
 				ipAddress = DirectoryClient.lookupIp(arg0.getItemAtPosition(pos).toString());
+				callerName = arg0.getItemAtPosition(pos).toString();
+				
 				//rserv.SERVERPORT = settings.getPort();
 				Log.d("SERVERIP", ipAddress);
 				RingerClient ringerClient = new RingerClient();
@@ -92,6 +92,11 @@ public class MainActivity extends Activity {
 	
 	public String getIpAddress(){
 		return ipAddress;
+	}
+	
+	public void display(){
+		Intent launchCallScreen = new Intent(getApplicationContext(),CallScreen.class);
+		startActivity(launchCallScreen);
 	}
 	
 	public void refreshUsers(){
