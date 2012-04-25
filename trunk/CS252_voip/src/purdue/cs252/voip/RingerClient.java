@@ -20,14 +20,15 @@ public class RingerClient{
 			InetAddress serverAddr = InetAddress.getByName(ipAddress);
 
 			// Connect to the server
-			Log.d("TCP", "C: Connecting...");
+			Log.d("TCP", "C: Connecting to " + ipAddress);
 			Socket clientSocket = new Socket(serverAddr, RingerServer.SERVERPORT);
-
+		
 			// Sending a message to the server
 			Log.d("TCP", "C: Sending a packet.");
 			PrintWriter out = new PrintWriter(new BufferedWriter(
 					new OutputStreamWriter(clientSocket.getOutputStream())), true);
 			out.println("Hello from Client");
+			
 			Log.d("TCP", "C: Sent.");
 			Log.d("TCP", "C: Done.");
 
