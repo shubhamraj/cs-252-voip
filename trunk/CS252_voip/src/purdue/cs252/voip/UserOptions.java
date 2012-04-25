@@ -13,8 +13,8 @@ public class UserOptions extends Activity{
 	Button saveButton, clearButton, backButton;
 	String userIdText, ipText;
 	int portText;
-	SharedPreferences settings;
-	SharedPreferences.Editor editor;
+	public static SharedPreferences settings;
+	public static SharedPreferences.Editor editor;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
