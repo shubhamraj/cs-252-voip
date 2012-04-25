@@ -35,7 +35,6 @@ public class MainActivity extends Activity {
 	
 	boolean clicked;
 	DirectoryClient client;
-	UserOptions settings;
 	ListView listView;
 	RingerClient ringerClient;
 	public static String callerName;
@@ -68,7 +67,8 @@ public class MainActivity extends Activity {
 				//rserv.SERVERPORT = settings.getPort();
 				Log.d("SERVERIP", ipAddress);
 				RingerClient ringerClient = new RingerClient();
-				ringerClient.start(ipAddress, settings.getUserId());
+				String temp = UserOptions.settings.getString("userIdText", null);
+				ringerClient.start(ipAddress, temp);
 				
 			}
 			

@@ -10,11 +10,17 @@ import android.widget.*;
 
 public class CallScreen extends Activity{
 	TextView contactName;
+	Button answerButton;
+	Button endButton;
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.phonecall);	
 		contactName = (TextView)findViewById(R.id.contactName);
 		contactName.setText(MainActivity.callerName);
+		
+		//endButton = (Button)findViewById(R.id.)
+		
+		//setOnClickListeners();
 	}
 	
 
