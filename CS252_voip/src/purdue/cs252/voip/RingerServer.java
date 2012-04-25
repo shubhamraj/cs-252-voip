@@ -12,7 +12,8 @@ import android.util.Log;
 public class RingerServer implements Runnable { 
 
 		public String SERVERIP; 
-		public static int SERVERPORT = 4444;
+		
+		public static int SERVERPORT = 5678;
 
 		//@Override
 		public void run() {
