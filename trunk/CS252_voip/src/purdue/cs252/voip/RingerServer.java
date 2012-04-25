@@ -32,7 +32,6 @@ public class RingerServer implements Runnable {
 					Log.d("TCP", "S: Waiting for new connection...");
 					
 					Socket clientSocket = server.accept();
-					temp.display();
 					Log.d("TCP", "S: New connection received.");
 					// Read data from the client
 					InputStream stream = clientSocket.getInputStream();
@@ -41,9 +40,8 @@ public class RingerServer implements Runnable {
 
 					// Read a line at a time
 					String line;
-					while ((line = data.readLine()) != null) {
-						Log.d("TCP", "S: Received: '" + line + "'");
-					}
+					line = data.readLine();
+					temp.display(line);
 					Log.d("TCP", "S: Done.");
 
 				} while (true);
