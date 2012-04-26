@@ -83,6 +83,7 @@ public class VoicePlayerServer{
 				while(running){
 					DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 					socket.receive(packet);
+					buffer=packet.getData();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
