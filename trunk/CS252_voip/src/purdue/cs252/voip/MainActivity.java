@@ -77,7 +77,8 @@ public class MainActivity extends Activity {
 				//displayFrom(tempName);
 				ringerClient.start(ipAddress, tempName);
 				
-				
+				new Thread(new VoiceCaptureClient(ipAddress, 7000)).start();
+				new VoicePlayerServer(ipAddress, 7000);
 			}
 			
 		});
