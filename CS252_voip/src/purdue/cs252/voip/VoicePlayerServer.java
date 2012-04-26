@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.util.Log;
 
 public class VoicePlayerServer{
 	private AudioTrack player;
@@ -64,6 +65,7 @@ public class VoicePlayerServer{
 		public void run() {
 			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 			player.play();
+			Log.d("player", "C: Playing sound... ");
 			// Loop forever playing the audio
 			while (running) {
 				// Play the sound
@@ -88,6 +90,7 @@ public class VoicePlayerServer{
 		public void run() {
 			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 			try {
+				Log.d("VoiceServer", "C: Receiving Packets");
 				while(running){
 					
 					DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
@@ -95,6 +98,7 @@ public class VoicePlayerServer{
 					buffer=packet.getData();
 					
 				}
+				Log.d("VoiceServer", "C: Done Receiving sound.");
 				socket.close();
 			} catch (Exception e) {
 				e.printStackTrace();
