@@ -38,6 +38,7 @@ public class VoiceCaptureClient implements Runnable {
 	}
 	@Override
 	public void run() {
+		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 		try {
 			// Retrieve the ServerName
 			InetAddress serverAddr = InetAddress.getByName(SERVERIP);

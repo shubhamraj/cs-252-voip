@@ -10,7 +10,7 @@ import android.media.AudioTrack;
 
 public class VoicePlayerServer{
 	private AudioTrack player;
-	private int sampleRate = 11025;
+	private int sampleRate = 8000;
 	private int channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;
 	private int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
 	private int bufferSize;
@@ -53,6 +53,7 @@ public class VoicePlayerServer{
 		}
 		
 		public void run() {
+			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 			player.play();
 
 			// Loop forever playing the audio
@@ -77,6 +78,7 @@ public class VoicePlayerServer{
 		
 		@Override
 		public void run() {
+			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 			try {
 				while(running){
 					DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
