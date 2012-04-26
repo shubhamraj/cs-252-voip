@@ -18,7 +18,7 @@ import android.media.MediaRecorder;
 public class Recorder implements Runnable {
 
 	private AudioRecord recorder;
-	int sampleRate = 11025;
+	int sampleRate = 8000;
 	int channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;
 	int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
 	int bufferSize;
@@ -33,6 +33,7 @@ public class Recorder implements Runnable {
 
 	@Override
 	public void run() {
+		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 		// Create a new recorder
 		recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate,
 				channelConfig, audioFormat, bufferSize);
