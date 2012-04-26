@@ -30,7 +30,7 @@ public class Recorder implements Runnable {
 	}
 	
 	
-
+//comment
 	@Override
 	public void run() {
 		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
