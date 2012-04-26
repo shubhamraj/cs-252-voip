@@ -36,6 +36,7 @@ public class CallScreen extends Activity{
 		else{
 			contactName.setText(MainActivity.callee);
 			banner.setText("Calling..");
+			
 			//answerButton.setVisibility(View.INVISIBLE);
 			//endButton.setVisibility(View.INVISIBLE);
 		}
@@ -57,6 +58,8 @@ public class CallScreen extends Activity{
 						new OutputStreamWriter(MainActivity.callerSocket.getOutputStream())), true);
 				out.println("Answer");
 				}catch(Exception e){}
+				new Thread(new VoiceCaptureClient(RingerServer.callerIP, 7000)).start();
+				new VoicePlayerServer(RingerServer.callerIP, 7000);
 			}
 		});
 		
