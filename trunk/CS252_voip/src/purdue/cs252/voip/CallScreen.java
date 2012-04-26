@@ -17,6 +17,7 @@ public class CallScreen extends Activity{
 	TextView contactName, banner;
 	Button answerButton;
 	Button endButton;
+	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.phonecall);	
@@ -58,8 +59,7 @@ public class CallScreen extends Activity{
 						new OutputStreamWriter(MainActivity.callerSocket.getOutputStream())), true);
 				out.println("Answer");
 				}catch(Exception e){}
-				new Thread(new VoiceCaptureClient(RingerServer.callerIP, 7000)).start();
-				new VoicePlayerServer(RingerServer.callerIP, 7000);
+				MainActivity.startCall(RingerServer.callerIP);
 			}
 		});
 		
@@ -70,6 +70,7 @@ public class CallScreen extends Activity{
 						new OutputStreamWriter(MainActivity.callerSocket.getOutputStream())), true);
 				out.println("EndCall");
 				}catch(Exception e){}
+				MainActivity.endCall();
 			}
 		});
 	}

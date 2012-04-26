@@ -59,28 +59,18 @@ public class DirectLinkTest extends Activity{
 			public void onClick(View v) {
 				ipString = ip.getText().toString();
 				portNum = Integer.parseInt(port.getText().toString());
-				capt = new VoiceCaptureClient(ipString, portNum);
-				cpTHR = new Thread(capt);
-				cpTHR.start();
-				player = new VoicePlayerServer(ipString, portNum);
+				MainActivity.startCall(ipString);
 			}
 		});
 		exitButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				capt.setStop();
-				player.stopRunning();
-				try {
-					cpTHR.join();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				MainActivity.endCall();
 				finish();
 			}
 		});
 	}
 	
-	public String getLocalIpAddress() {
+	public static String getLocalIpAddress() {
 	    try {
 	        for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
 	            NetworkInterface intf = en.nextElement();

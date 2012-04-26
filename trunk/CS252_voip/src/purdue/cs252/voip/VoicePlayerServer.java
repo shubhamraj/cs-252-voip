@@ -14,36 +14,45 @@ public class VoicePlayerServer{
 	private int channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;
 	private int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
 	private int bufferSize;
-	private byte[][] buffer;
+	private byte[] buffer;
 	private String ipAddress;
 	private int portNumber;
 	private InetAddress serverAddr;
 	private DatagramSocket socket;
 	private boolean running = false;
 	//comment
-	public VoicePlayerServer(String ip, int port){
+	
+	VoicePlayer voicePlayer;
+	VoiceServer receiver;
+	Thread playerThread, receiverThread;
+	public VoicePlayerServer(){
 		bufferSize = AudioTrack.getMinBufferSize(sampleRate, channelConfig, audioFormat);
-		buffer = new byte[10][bufferSize];
-		ipAddress = ip;
-		portNumber = port;
-		
-		startRunning();
+		buffer = new byte[bufferSize];
+		voicePlayer = new VoicePlayer();
+		receiver = new VoiceServer();;
 	}
 	
 	public void stopRunning(){
 		running = false;
+		
+		try {
+			receiverThread.join();
+			playerThread.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void startRunning(){
 		running = true;
+		
 		// Start the server
-		new Thread(new VoiceServer()).start();
+		receiverThread = new Thread(receiver);
+		playerThread = new Thread(voicePlayer);
 		
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) { }
-		
-		new Thread(new VoicePlayer()).start();
+		receiverThread.start();
+		playerThread.start();
 	}
 	
 	private class VoicePlayer implements Runnable{
@@ -55,13 +64,10 @@ public class VoicePlayerServer{
 		public void run() {
 			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 			player.play();
-			int i = 0;
 			// Loop forever playing the audio
 			while (running) {
 				// Play the sound
-				i = i%10;
-				player.write(buffer[i], 0, bufferSize);
-				i++;
+				player.write(buffer, 0, bufferSize);
 			}
 			
 		}
@@ -82,13 +88,12 @@ public class VoicePlayerServer{
 		public void run() {
 			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 			try {
-				int i = 0;
 				while(running){
-					i = i%10;
-					DatagramPacket packet = new DatagramPacket(buffer[i], buffer[i].length);
+					
+					DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 					socket.receive(packet);
-					buffer[i]=packet.getData();
-					i++;
+					buffer=packet.getData();
+					
 				}
 				socket.close();
 			} catch (Exception e) {
@@ -97,6 +102,12 @@ public class VoicePlayerServer{
 			
 		}
 		
+	}
+
+	public void setIPandPort(String ip, int port) {
+		// TODO Auto-generated method stub
+		this.ipAddress = ip;
+		this.portNumber = port;
 	}
 	
 }

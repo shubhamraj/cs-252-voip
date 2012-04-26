@@ -15,60 +15,120 @@ package purdue.cs252.voip;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+
+import android.media.AudioFormat;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
 import android.util.Log;
 
 //comment
-public class VoiceCaptureClient implements Runnable {
+public class VoiceCaptureClient{
 	
-	static boolean running;
+	boolean running;
 	String SERVERIP;
 	int SERVERPORT;
 
-	Thread rec;
+	Thread recorder;
+	Thread sender;
 	Recorder r;
+	Sender s;
+	byte buffer[];
 	
-	public VoiceCaptureClient(final String SERVERIP, final int SERVERPORT){
+	public VoiceCaptureClient(){
 		
-		this.SERVERIP = SERVERIP;
-		this.SERVERPORT = SERVERPORT;
 		running = true;
 		r = new Recorder();
-		rec = new Thread(r);
-		rec.start();
+		s = new Sender();
 	}
-	public void setStop(){
+	
+	public void stopRunning(){
 		running = false;
 		try {
-			rec.join();
+			recorder.join();
+			sender.join();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	@Override
-	public void run() {
-		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
-		try {
-			// Retrieve the ServerName
-			InetAddress serverAddr = InetAddress.getByName(SERVERIP);
+	
+	void startRunning(){
+		recorder = new Thread(r);
+		sender = new Thread(s);
+		recorder.start();
+		sender.start();
+	}
+	
 
-			//Log.d("UDP", "C: Connecting...");
-			/* Create new UDP-Socket */
-			DatagramSocket socket = new DatagramSocket();
-			int i = 0;
-			while (running) {
-				/* Create UDP-packet with
-				 * data & destination(url+port) */
-				i = i%10;
-				DatagramPacket packet = new DatagramPacket(Recorder.buffer[i], Recorder.buffer[i].length, serverAddr, SERVERPORT);
-				i++;
-				/* Send out the packet */
-				socket.send(packet);
-			}
-			socket.close();
+	public void setIPandPort(String ipAddress, int port) {
+		this.SERVERIP = ipAddress;
+		this.SERVERPORT = port;
+	}
+	
+	private class Sender implements Runnable {
+		Sender(){
 			
-		} catch (Exception e) {
-			Log.e("UDP", "VoiceCaptureClient: Error sending UDP packets", e);
+		}
+		@Override
+		public void run() {
+			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
+			try {
+				// Retrieve the ServerName
+				InetAddress serverAddr = InetAddress.getByName(SERVERIP);
+
+				//Log.d("UDP", "C: Connecting...");
+				/* Create new UDP-Socket */
+				DatagramSocket socket = new DatagramSocket();
+				
+				while (running) {
+					/* Create UDP-packet with
+					 * data & destination(url+port) */
+					DatagramPacket packet = new DatagramPacket(buffer, buffer.length, serverAddr, SERVERPORT);
+					
+					/* Send out the packet */
+					socket.send(packet);
+				}
+				socket.close();
+				
+			} catch (Exception e) {
+				Log.e("UDP", "VoiceCaptureClient: Error sending UDP packets", e);
+			}
+		}
+	}
+	
+	private class Recorder implements Runnable {
+
+		private AudioRecord recorder;
+		int sampleRate = 8000;
+		int channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;
+		int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
+		int bufferSize;
+		
+		
+		public Recorder(){
+			bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat);
+			buffer = new byte[bufferSize];
+		}
+		
+		
+	//comment
+		@Override
+		public void run() {
+			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
+			// Create a new recorder
+			recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate,
+					channelConfig, audioFormat, bufferSize);
+
+			// Start the recording
+			recorder.startRecording();
+			// Loop forever recording input
+			while (running) {
+				// Read from the microphone
+				
+				
+				recorder.read(buffer, 0, bufferSize);
+			}
+
 		}
 	}
 }
