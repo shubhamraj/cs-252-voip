@@ -17,6 +17,9 @@ public class DirectLinkTest extends Activity{
 	ImageButton saveButton, callButton, exitButton;
 	String ipString = "";
 	int portNum = 5000;
+	VoiceCaptureClient capt;
+	VoicePlayerServer player;
+	Thread cpTHR;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,12 +59,22 @@ public class DirectLinkTest extends Activity{
 			public void onClick(View v) {
 				ipString = ip.getText().toString();
 				portNum = Integer.parseInt(port.getText().toString());
-				new Thread(new VoiceCaptureClient(ipString, portNum)).start();
-				new VoicePlayerServer(ipString, portNum);
+				capt = new VoiceCaptureClient(ipString, portNum);
+				cpTHR = new Thread(capt);
+				cpTHR.start();
+				player = new VoicePlayerServer(ipString, portNum);
 			}
 		});
 		exitButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				capt.setStop();
+				player.stopRunning();
+				try {
+					cpTHR.join();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				finish();
 			}
 		});
