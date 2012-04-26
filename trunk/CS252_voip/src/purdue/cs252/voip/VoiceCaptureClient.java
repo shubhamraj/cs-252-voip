@@ -76,7 +76,7 @@ public class VoiceCaptureClient{
 				// Retrieve the ServerName
 				InetAddress serverAddr = InetAddress.getByName(SERVERIP);
 
-				//Log.d("UDP", "C: Connecting...");
+				Log.d("UDP", "C: Sending Voice packets to " + SERVERIP + "at port" + SERVERPORT);
 				/* Create new UDP-Socket */
 				DatagramSocket socket = new DatagramSocket();
 				
@@ -121,6 +121,7 @@ public class VoiceCaptureClient{
 
 			// Start the recording
 			recorder.startRecording();
+			Log.d("REC", "C:Recording voice to buffer...");
 			// Loop forever recording input
 			while (running) {
 				// Read from the microphone
