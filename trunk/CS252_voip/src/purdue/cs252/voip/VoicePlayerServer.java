@@ -14,7 +14,7 @@ public class VoicePlayerServer{
 	private int channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;
 	private int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
 	private int bufferSize;
-	private byte[] buffer;
+	private byte[][] buffer;
 	private String ipAddress;
 	private int portNumber;
 	private InetAddress serverAddr;
@@ -23,7 +23,7 @@ public class VoicePlayerServer{
 	//comment
 	public VoicePlayerServer(String ip, int port){
 		bufferSize = AudioTrack.getMinBufferSize(sampleRate, channelConfig, audioFormat);
-		buffer = new byte[bufferSize];
+		buffer = new byte[10][bufferSize];
 		ipAddress = ip;
 		portNumber = port;
 		
@@ -55,11 +55,13 @@ public class VoicePlayerServer{
 		public void run() {
 			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 			player.play();
-
+			int i = 0;
 			// Loop forever playing the audio
 			while (running) {
 				// Play the sound
-				player.write(buffer, 0, bufferSize);
+				i = i%10;
+				player.write(buffer[i], 0, bufferSize);
+				i++;
 			}
 			
 		}
@@ -80,11 +82,15 @@ public class VoicePlayerServer{
 		public void run() {
 			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 			try {
+				int i = 0;
 				while(running){
-					DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+					i = i%10;
+					DatagramPacket packet = new DatagramPacket(buffer[i], buffer[i].length);
 					socket.receive(packet);
-					buffer=packet.getData();
+					buffer[i]=packet.getData();
+					i++;
 				}
+				socket.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
