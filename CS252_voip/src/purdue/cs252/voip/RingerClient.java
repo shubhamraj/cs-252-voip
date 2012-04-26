@@ -18,6 +18,7 @@ import android.util.Log;
 
 public class RingerClient{
 	//@Override
+
 	
 	public void start(String ipAddress, String username) {
 		try {

@@ -40,6 +40,9 @@ public class MainActivity extends Activity {
 	RingerClient ringerClient;
 	public static String callerName;
 	public static Socket callerSocket;
+	public static String callee;
+	public static String tempName;
+	public static boolean initiatingCall = false;
 	
 	String[] values = new String[]{"No Users Present"};
 	public static String ipAddress;
@@ -65,12 +68,15 @@ public class MainActivity extends Activity {
 					long id) {
 				//Toast.makeText(getApplicationContext(), "Click ListItem Number " + pos, Toast.LENGTH_SHORT).show();4
 				ipAddress = DirectoryClient.lookupIp(arg0.getItemAtPosition(pos).toString());
+				callee = arg0.getItemAtPosition(pos).toString();
 				
 				//rserv.SERVERPORT = settings.getPort();
 				Log.d("SERVERIP", ipAddress);
 				RingerClient ringerClient = new RingerClient();
-				String temp = UserOptions.settings.getString("userIdText", null);
-				ringerClient.start(ipAddress, temp);
+				tempName = UserOptions.settings.getString("userIdText", null);
+				//displayFrom(tempName);
+				ringerClient.start(ipAddress, tempName);
+				
 				
 			}
 			
@@ -95,9 +101,17 @@ public class MainActivity extends Activity {
 		return ipAddress;
 	}
 	
+	public void displayFrom(String name){
+		callerName = name;
+		initiatingCall = true;
+		Intent launchCallScreen = new Intent(getApplicationContext(),CallScreen.class);
+		startActivity(launchCallScreen);
+	}
+	
 	public void display(String name, Socket socket){
 		callerSocket = socket;
 		callerName = name;
+		initiatingCall = false;
 		Intent launchCallScreen = new Intent(getApplicationContext(),CallScreen.class);
 		startActivity(launchCallScreen);
 	}
