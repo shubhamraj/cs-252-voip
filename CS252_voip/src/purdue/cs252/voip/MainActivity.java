@@ -1,6 +1,10 @@
 package purdue.cs252.voip;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import purdue.cs252.voip.R;
 import purdue.cs252.voip.RingerClient;
@@ -28,6 +32,9 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class MainActivity extends Activity {
 
+	public static VoicePlayerServer voicePlayer;
+	public static VoiceCaptureClient voiceCapture;
+	final int VOICE_PORT = 7000;
 	Button recordButton;
 	Button settingsButton;
 	
@@ -62,8 +69,11 @@ public class MainActivity extends Activity {
 		ListView listView = (ListView)findViewById(R.id.contactList);
 		listView.setAdapter(adapter);
 		
+		voiceCapture = new VoiceCaptureClient();
+		voicePlayer = new VoicePlayerServer();
+		
 		listView.setOnItemClickListener(new OnItemClickListener(){
-
+			
 			public void onItemClick(AdapterView<?> arg0, View view, int pos,
 					long id) {
 				//Toast.makeText(getApplicationContext(), "Click ListItem Number " + pos, Toast.LENGTH_SHORT).show();4
@@ -77,8 +87,7 @@ public class MainActivity extends Activity {
 				//displayFrom(tempName);
 				ringerClient.start(ipAddress, tempName);
 				
-				new Thread(new VoiceCaptureClient(ipAddress, 7000)).start();
-				new VoicePlayerServer(ipAddress, 7000);
+				MainActivity.startCall(ipAddress);
 			}
 			
 		});
@@ -150,6 +159,33 @@ public class MainActivity extends Activity {
 	private void openOptions(){
 		Intent launchOptions = new Intent(getApplicationContext(),UserOptions.class);
 		startActivity(launchOptions);
+	}
+	static String getLocalIpAddress() {
+	    try {
+	        for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+	            NetworkInterface intf = en.nextElement();
+	            for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+	                InetAddress inetAddress = enumIpAddr.nextElement();
+	                if (!inetAddress.isLoopbackAddress()) {
+	                    return inetAddress.getHostAddress().toString();
+	                }
+	            }
+	        }
+	    } catch (SocketException ex) {
+	        //Log.e(LOG_TAG, ex.toString());
+	    }
+	    return null;
+	}
+	public static void startCall(String toIP){
+		voiceCapture.setIPandPort(toIP, 7000);
+		voicePlayer.setIPandPort(getLocalIpAddress(), 7000);
+		voiceCapture.startRunning();
+		voicePlayer.startRunning();
+	}
+	public static void endCall(){
+		
+		voiceCapture.stopRunning();
+		voicePlayer.stopRunning();
 	}
 	
 
