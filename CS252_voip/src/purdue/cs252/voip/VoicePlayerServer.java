@@ -20,7 +20,7 @@ public class VoicePlayerServer{
 	private InetAddress serverAddr;
 	private DatagramSocket socket;
 	private boolean running = false;
-	
+	//comment
 	public VoicePlayerServer(String ip, int port){
 		bufferSize = AudioTrack.getMinBufferSize(sampleRate, channelConfig, audioFormat);
 		buffer = new byte[bufferSize];

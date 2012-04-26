@@ -17,6 +17,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import android.util.Log;
 
+//comment
 public class VoiceCaptureClient implements Runnable {
 	
 	static boolean running;
