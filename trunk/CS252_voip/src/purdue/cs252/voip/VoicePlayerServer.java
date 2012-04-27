@@ -35,7 +35,7 @@ public class VoicePlayerServer{
 	
 	public void stopRunning(){
 		running = false;
-		
+		Log.d("VoiceServer", "C: Stopped");
 		try {
 			receiverThread.join();
 			playerThread.join();
@@ -79,7 +79,7 @@ public class VoicePlayerServer{
 		public VoiceServer(){
 			try{
 				serverAddr = InetAddress.getByName(ipAddress);
-				socket = new DatagramSocket(portNumber, serverAddr);
+				socket = new DatagramSocket(portNumber);
 			}
 			catch(Exception e){
 				e.printStackTrace();
@@ -91,9 +91,10 @@ public class VoicePlayerServer{
 			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 			try {
 				Log.d("VoiceServer", "C: Receiving Packets");
+				DatagramPacket packet;
 				while(running){
 					
-					DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+					packet = new DatagramPacket(buffer, buffer.length);
 					socket.receive(packet);
 					buffer=packet.getData();
 					

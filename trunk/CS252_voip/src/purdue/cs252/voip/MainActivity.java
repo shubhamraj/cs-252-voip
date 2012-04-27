@@ -177,8 +177,8 @@ public class MainActivity extends Activity {
 	    return null;
 	}
 	public static void startCall(String toIP){
-		voiceCapture.setIPandPort(toIP, 7000);
-		voicePlayer.setIPandPort(getLocalIpAddress(), 7000);
+		voiceCapture.setIPandPort(toIP, 5000);
+		voicePlayer.setIPandPort(getLocalIpAddress(), 5000);
 		voiceCapture.startRunning();
 		voicePlayer.startRunning();
 	}
