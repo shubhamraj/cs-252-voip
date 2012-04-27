@@ -14,7 +14,7 @@ import android.util.Log;
 public class RingerServer implements Runnable { 
 		public static String callerIP;
 		public String SERVERIP; 
-		public static int SERVERPORT = 20000;
+		public static int SERVERPORT = 20001;
 		MainActivity temp;
 		
 		public RingerServer(MainActivity activity){
@@ -35,7 +35,7 @@ public class RingerServer implements Runnable {
 					Socket clientSocket = server.accept();
 					InetAddress iAddress = clientSocket.getInetAddress();
 					callerIP = iAddress.getHostAddress();
-					Log.d("TCP", "S: New connection received.");
+					Log.d("TCP", "S: New connection received from IP: " + callerIP);
 					// Read data from the client
 					InputStream stream = clientSocket.getInputStream();
 					// InputStream is an abstract class. We needed to use a subclass

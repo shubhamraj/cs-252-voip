@@ -43,6 +43,7 @@ public class VoiceCaptureClient{
 	
 	public void stopRunning(){
 		running = false;
+		Log.d("VoiceServer", "C: Stopped");
 		try {
 			recorder.join();
 			sender.join();
@@ -79,11 +80,11 @@ public class VoiceCaptureClient{
 				Log.d("UDP", "C: Sending Voice packets to " + SERVERIP + "at port" + SERVERPORT);
 				/* Create new UDP-Socket */
 				DatagramSocket socket = new DatagramSocket();
-				
+				DatagramPacket packet;
 				while (running) {
 					/* Create UDP-packet with
 					 * data & destination(url+port) */
-					DatagramPacket packet = new DatagramPacket(buffer, buffer.length, serverAddr, SERVERPORT);
+					 packet = new DatagramPacket(buffer, buffer.length, serverAddr, SERVERPORT);
 					
 					/* Send out the packet */
 					socket.send(packet);
