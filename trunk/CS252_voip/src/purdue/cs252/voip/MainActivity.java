@@ -69,8 +69,8 @@ public class MainActivity extends Activity {
 		ListView listView = (ListView)findViewById(R.id.contactList);
 		listView.setAdapter(adapter);
 		
-		voiceCapture = new VoiceCaptureClient();
-		voicePlayer = new VoicePlayerServer();
+		//voiceCapture = new VoiceCaptureClient();
+		//voicePlayer = new VoicePlayerServer();
 		
 		listView.setOnItemClickListener(new OnItemClickListener(){
 			
@@ -87,7 +87,7 @@ public class MainActivity extends Activity {
 				//displayFrom(tempName);
 				ringerClient.start(ipAddress, tempName);
 				
-				MainActivity.startCall(ipAddress);
+				//MainActivity.startCall(ipAddress);
 			}
 			
 		});
@@ -105,6 +105,11 @@ public class MainActivity extends Activity {
 	public void onResume(){
 		super.onResume();
 		refreshUsers();
+	}
+	
+	public void onDestroy(){
+		super.onDestroy();
+		DirectoryClient.leaveServer();	
 	}
 	
 	public String getIpAddress(){
@@ -176,7 +181,7 @@ public class MainActivity extends Activity {
 	    }
 	    return null;
 	}
-	public static void startCall(String toIP){
+	/*public static void startCall(String toIP){
 		voiceCapture.setIPandPort(toIP, 5000);
 		voicePlayer.setIPandPort(getLocalIpAddress(), 5000);
 		voiceCapture.startRunning();
@@ -187,6 +192,7 @@ public class MainActivity extends Activity {
 		voiceCapture.stopRunning();
 		voicePlayer.stopRunning();
 	}
+	*/
 	
 
 }
