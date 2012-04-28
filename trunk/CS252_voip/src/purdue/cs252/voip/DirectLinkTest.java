@@ -8,6 +8,7 @@ import java.util.Enumeration;
 import purdue.cs252.voip.R;
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
@@ -17,10 +18,8 @@ public class DirectLinkTest extends Activity{
 	ImageButton saveButton, callButton, exitButton;
 	String ipString = "";
 	int portNum = 5000;
-	VoiceCaptureClient capt;
-	VoicePlayerServer player;
-	Thread cpTHR;
-	
+	VoicePlayerServer vs;
+	VoiceCaptureClient vc;
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.audiotest);	
@@ -53,24 +52,34 @@ public class DirectLinkTest extends Activity{
 			public void onClick(View v) {
 				ipString = ip.getText().toString();
 				portNum = Integer.parseInt(port.getText().toString());
+				Log.d("CALL", "Saved IP & Port: " +ipString + " " + portNum);
 			}
 		});
 		callButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				ipString = ip.getText().toString();
 				portNum = Integer.parseInt(port.getText().toString());
-				MainActivity.startCall(ipString);
+				Log.d("CALL", "Saved IP & Port: " +ipString + " " + portNum);
+				
+				
+				vs = new VoicePlayerServer(ipString, portNum);
+				vc = new VoiceCaptureClient(ipString, portNum);
+				new Thread(vc).start();
+				
 			}
 		});
 		exitButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				MainActivity.endCall();
+				vs.stopRunning();
+				vc.setStop();
+				vs = null;
+				vc = null;
 				finish();
 			}
 		});
 	}
 	
-	public static String getLocalIpAddress() {
+	public String getLocalIpAddress() {
 	    try {
 	        for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
 	            NetworkInterface intf = en.nextElement();
