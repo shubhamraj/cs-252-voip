@@ -1,8 +1,11 @@
 package purdue.cs252.voip;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketException;
 
 import android.media.AudioFormat;
 import android.media.AudioManager;
@@ -21,39 +24,31 @@ public class VoicePlayerServer{
 	private InetAddress serverAddr;
 	private DatagramSocket socket;
 	private boolean running = false;
-	//comment
 	
-	VoicePlayer voicePlayer;
-	VoiceServer receiver;
-	Thread playerThread, receiverThread;
-	public VoicePlayerServer(){
+	//comment
+	public VoicePlayerServer(String ip, int port){
 		bufferSize = AudioTrack.getMinBufferSize(sampleRate, channelConfig, audioFormat);
 		buffer = new byte[bufferSize];
-		voicePlayer = new VoicePlayer();
-		receiver = new VoiceServer();;
+		ipAddress = ip;
+		portNumber = port;
+		
+		startRunning();
 	}
 	
 	public void stopRunning(){
 		running = false;
-		Log.d("VoiceServer", "C: Stopped");
-		try {
-			receiverThread.join();
-			playerThread.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	public void startRunning(){
 		running = true;
-		
 		// Start the server
-		receiverThread = new Thread(receiver);
-		playerThread = new Thread(voicePlayer);
+		new Thread(new VoiceServer()).start();
 		
-		receiverThread.start();
-		playerThread.start();
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) { }
+		
+		new Thread(new VoicePlayer()).start();
 	}
 	
 	private class VoicePlayer implements Runnable{
@@ -63,14 +58,15 @@ public class VoicePlayerServer{
 		}
 		
 		public void run() {
-			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
+			//android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 			player.play();
-			Log.d("player", "C: Playing sound... ");
+
 			// Loop forever playing the audio
 			while (running) {
 				// Play the sound
 				player.write(buffer, 0, bufferSize);
 			}
+			player.stop();
 			
 		}
 	}
@@ -78,41 +74,46 @@ public class VoicePlayerServer{
 	private class VoiceServer implements Runnable{
 		public VoiceServer(){
 			try{
-				serverAddr = InetAddress.getByName(ipAddress);
-				socket = new DatagramSocket(portNumber);
+				//serverAddr = InetAddress.getByName(ipAddress);
+				socket = new DatagramSocket(null);
+				socket.setReuseAddress(true);
+				socket.bind(new InetSocketAddress(portNumber));
+				
+				Log.d("SERVER", "Listening at: " + socket.getLocalAddress());
+				//socket.connect(InetAddress.getByName(ipAddress), portNumber);
+				//Log.d("SERVER", "Listening at: " + socket.getInetAddress().getHostAddress());
 			}
-			catch(Exception e){
+			catch(SocketException e){
 				e.printStackTrace();
+				Log.d("VoiceServer", "Exception has occured trying open a socket.");
+				Log.d("VoiceServer", "Details:" + e.getMessage());
 			}
 		}
 		
 		@Override
 		public void run() {
-			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
+			//android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 			try {
-				Log.d("VoiceServer", "C: Receiving Packets");
-				DatagramPacket packet;
+				int i =0;
+				DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 				while(running){
-					
-					packet = new DatagramPacket(buffer, buffer.length);
+					Log.d("SERVER", "Waiting for packet...");
 					socket.receive(packet);
 					buffer=packet.getData();
-					
+					StringBuilder s = new StringBuilder();
+					for (int j = 0; j < buffer.length; j++){
+						s.append((char)buffer[j]);
+					}
+					Log.d("SERVER", "PacketReceived "+i + " Data: " + s.toString());
+					i++;
 				}
-				Log.d("VoiceServer", "C: Done Receiving sound.");
-				socket.close();
-			} catch (Exception e) {
+			} catch (IOException e) {
 				e.printStackTrace();
+				Log.d("VoiceServer", "IOException has occured trying to receive UDP packets.");
 			}
 			
 		}
 		
-	}
-
-	public void setIPandPort(String ip, int port) {
-		// TODO Auto-generated method stub
-		this.ipAddress = ip;
-		this.portNumber = port;
 	}
 	
 }

@@ -15,122 +15,57 @@ package purdue.cs252.voip;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
 import android.util.Log;
 
 //comment
-public class VoiceCaptureClient{
+public class VoiceCaptureClient implements Runnable {
 	
-	boolean running;
+	static boolean running;
 	String SERVERIP;
 	int SERVERPORT;
 
-	Thread recorder;
-	Thread sender;
-	Recorder r;
-	Sender s;
-	byte buffer[];
+	Thread rec;
 	
-	public VoiceCaptureClient(){
+	public VoiceCaptureClient(final String SERVERIP, final int SERVERPORT){
 		
+		this.SERVERIP = SERVERIP;
+		this.SERVERPORT = SERVERPORT;
 		running = true;
-		r = new Recorder();
-		s = new Sender();
+		rec = new Thread(new Recorder());
+		rec.start();
 	}
-	
-	public void stopRunning(){
+	public void setStop(){
 		running = false;
-		Log.d("VoiceServer", "C: Stopped");
+	}
+	@Override
+	public void run() {
+		//android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 		try {
-			recorder.join();
-			sender.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	void startRunning(){
-		recorder = new Thread(r);
-		sender = new Thread(s);
-		recorder.start();
-		sender.start();
-	}
-	
+			// Retrieve the ServerName
+			InetAddress serverAddr = InetAddress.getByName(SERVERIP);
 
-	public void setIPandPort(String ipAddress, int port) {
-		this.SERVERIP = ipAddress;
-		this.SERVERPORT = port;
-	}
-	
-	private class Sender implements Runnable {
-		Sender(){
-			
-		}
-		@Override
-		public void run() {
-			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
-			try {
-				// Retrieve the ServerName
-				InetAddress serverAddr = InetAddress.getByName(SERVERIP);
-
-				Log.d("UDP", "C: Sending Voice packets to " + SERVERIP + "at port" + SERVERPORT);
-				/* Create new UDP-Socket */
-				DatagramSocket socket = new DatagramSocket();
-				DatagramPacket packet;
-				while (running) {
-					/* Create UDP-packet with
-					 * data & destination(url+port) */
-					 packet = new DatagramPacket(buffer, buffer.length, serverAddr, SERVERPORT);
-					
-					/* Send out the packet */
-					socket.send(packet);
-				}
-				socket.close();
-				
-			} catch (Exception e) {
-				Log.e("UDP", "VoiceCaptureClient: Error sending UDP packets", e);
-			}
-		}
-	}
-	
-	private class Recorder implements Runnable {
-
-		private AudioRecord recorder;
-		int sampleRate = 8000;
-		int channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;
-		int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
-		int bufferSize;
-		
-		
-		public Recorder(){
-			bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat);
-			buffer = new byte[bufferSize];
-		}
-		
-		
-	//comment
-		@Override
-		public void run() {
-			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
-			// Create a new recorder
-			recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate,
-					channelConfig, audioFormat, bufferSize);
-
-			// Start the recording
-			recorder.startRecording();
-			Log.d("REC", "C:Recording voice to buffer...");
-			// Loop forever recording input
+			//Log.d("UDP", "C: Connecting...");
+			/* Create new UDP-Socket */
+			DatagramSocket socket = new DatagramSocket();
+			//socket.connect(serverAddr, SERVERPORT);
+			Log.d("REC", "Starting to send packets to "+serverAddr);
+			//Log.d("REC", "Socket at "+socket.getRemoteSocketAddress());
+			//int i =0;
 			while (running) {
-				// Read from the microphone
 				
+				/* Create UDP-packet with
+				 * data & destination(url+port) */
+				DatagramPacket packet = new DatagramPacket(Recorder.buffer, Recorder.buffer.length, serverAddr, SERVERPORT);
+				/* Send out the packet */
 				
-				recorder.read(buffer, 0, bufferSize);
+				socket.send(packet);
+				//Log.d("REC", "Sending a packet "+ i);
+				//i++;
 			}
-
+			Log.d("REC", "Done Sending all.");
+			
+		} catch (Exception e) {
+			Log.e("UDP", "VoiceCaptureClient: Error sending UDP packets", e);
 		}
 	}
 }
