@@ -35,8 +35,7 @@ public class MainActivity extends Activity {
 	public static VoicePlayerServer voicePlayer;
 	public static VoiceCaptureClient voiceCapture;
 	final int VOICE_PORT = 7000;
-	Button recordButton;
-	Button settingsButton;
+	Button recordButton, settingsButton, refreshButton;
 	
 	//following button is for testing only
 	Button testButton; Intent testPage;
@@ -147,7 +146,16 @@ public class MainActivity extends Activity {
 
 	public void setOnClickListeners(){
 		settingsButton = (Button)findViewById(R.id.settings);
+		refreshButton = (Button)findViewById(R.id.refreshButton);
 		
+		refreshButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				refreshUsers();
+				
+			}
+		});
 		settingsButton.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
