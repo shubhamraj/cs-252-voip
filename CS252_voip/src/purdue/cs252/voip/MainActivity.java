@@ -112,6 +112,11 @@ public class MainActivity extends Activity {
 		DirectoryClient.leaveServer();	
 	}
 	
+	public void onPause(){
+		super.onPause();
+		DirectoryClient.leaveServer();
+	}
+	
 	public String getIpAddress(){
 		return ipAddress;
 	}
