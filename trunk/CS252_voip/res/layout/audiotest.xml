@@ -53,6 +53,21 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/lbl_sent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sent: "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/lbl_recieved"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Received: "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
     </LinearLayout>
 
     <LinearLayout

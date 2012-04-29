@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 
+import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -14,24 +15,26 @@ import android.util.Log;
 
 public class VoicePlayerServer{
 	private AudioTrack player;
+	private AudioManager aManager;
 	private int sampleRate = 8000;
 	private int channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;
 	private int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
-	private int bufferSize;
+	private int bufferSize, minSize;
 	private byte[] buffer;
-	private String ipAddress;
+	//private String ipAddress;
 	private int portNumber;
-	private InetAddress serverAddr;
+	//private InetAddress serverAddr;
 	private DatagramSocket socket;
 	private boolean running = false;
 	
 	//comment
-	public VoicePlayerServer(String ip, int port){
-		bufferSize = AudioTrack.getMinBufferSize(sampleRate, channelConfig, audioFormat);
+	public VoicePlayerServer(int port){
+		bufferSize = 3072;
+		minSize = AudioTrack.getMinBufferSize(sampleRate, channelConfig, audioFormat);
+		//bufferSize = minSize-128;
 		buffer = new byte[bufferSize];
-		ipAddress = ip;
+		//ipAddress = ip;
 		portNumber = port;
-		
 		startRunning();
 	}
 	
@@ -44,9 +47,9 @@ public class VoicePlayerServer{
 		// Start the server
 		new Thread(new VoiceServer()).start();
 		
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) { }
+		//try {
+		//	Thread.sleep(500);
+		//} catch (InterruptedException e) { }
 		
 		new Thread(new VoicePlayer()).start();
 	}
@@ -54,13 +57,16 @@ public class VoicePlayerServer{
 	private class VoicePlayer implements Runnable{
 		public VoicePlayer(){
 			player = new AudioTrack(AudioManager.STREAM_VOICE_CALL, sampleRate, 
-					channelConfig, audioFormat, bufferSize, AudioTrack.MODE_STREAM);
+					channelConfig, audioFormat, minSize, AudioTrack.MODE_STREAM);
+			//aManager = (AudioManager)DirectLinkTest.context.getSystemService(Context.AUDIO_SERVICE);
+			//startRunning();
 		}
 		
 		public void run() {
 			//android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 			player.play();
-
+			//aManager.setMode(aManager.MODE_IN_CALL);
+			//aManager.setSpeakerphoneOn(false);
 			// Loop forever playing the audio
 			while (running) {
 				// Play the sound
@@ -73,7 +79,9 @@ public class VoicePlayerServer{
 	
 	private class VoiceServer implements Runnable{
 		public VoiceServer(){
+			
 			try{
+				
 				//serverAddr = InetAddress.getByName(ipAddress);
 				socket = new DatagramSocket(null);
 				socket.setReuseAddress(true);
@@ -92,20 +100,22 @@ public class VoicePlayerServer{
 		
 		@Override
 		public void run() {
-			//android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
+			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 			try {
-				int i =0;
-				DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+				//long i =0;
+				
+				
 				while(running){
-					Log.d("SERVER", "Waiting for packet...");
+					//Log.d("SERVER", "Waiting for packet...");
+					DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 					socket.receive(packet);
 					buffer=packet.getData();
-					StringBuilder s = new StringBuilder();
-					for (int j = 0; j < buffer.length; j++){
-						s.append((char)buffer[j]);
-					}
-					Log.d("SERVER", "PacketReceived "+i + " Data: " + s.toString());
-					i++;
+					//StringBuilder s = new StringBuilder();
+					//for (int j = 0; j < buffer.length; j++){
+						//s.append((char)buffer[j]);
+					//}
+					//Log.d("SERVER", "PacketReceived "+i + " Data: " + s.toString());
+					DirectLinkTest.recieved++;
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
