@@ -34,8 +34,8 @@ public class MainActivity extends Activity {
 
 	public static VoicePlayerServer voicePlayer;
 	public static VoiceCaptureClient voiceCapture;
-	final int VOICE_PORT = 7000;
-	Button recordButton, settingsButton, refreshButton;
+	final static int UDP_PORT = 5000;
+	Button recordButton, settingsButton, refreshButton, btn_quit;
 	
 	//following button is for testing only
 	Button testButton; Intent testPage;
@@ -92,6 +92,7 @@ public class MainActivity extends Activity {
 		});
 		//following 2 lines are for testing only
 		testButton = (Button)findViewById(R.id.callTest);
+		btn_quit = (Button)findViewById(R.id.btn_quit);
 		testPage = new Intent(getApplicationContext(),DirectLinkTest.class);
 
 		
@@ -156,6 +157,13 @@ public class MainActivity extends Activity {
 				
 			}
 		});
+		btn_quit.setOnClickListener(new View.OnClickListener() {
+			
+			public void onClick(View v) {
+				finish();
+				System.exit(0);
+			}
+		});
 		settingsButton.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
@@ -194,18 +202,24 @@ public class MainActivity extends Activity {
 	    }
 	    return null;
 	}
-	/*public static void startCall(String toIP){
-		voiceCapture.setIPandPort(toIP, 5000);
-		voicePlayer.setIPandPort(getLocalIpAddress(), 5000);
-		voiceCapture.startRunning();
-		voicePlayer.startRunning();
+	static Thread vc;
+	public static void startCall(String toIP){
+		voicePlayer = new VoicePlayerServer(UDP_PORT);
+		voiceCapture = new VoiceCaptureClient(ipAddress, UDP_PORT);
+		vc = new Thread(voiceCapture);
+		vc.start();
 	}
 	public static void endCall(){
 		
-		voiceCapture.stopRunning();
+		voiceCapture.setStop();
 		voicePlayer.stopRunning();
+		try {
+			vc.join();
+		} catch (Exception e){
+			
+		}
 	}
-	*/
+	
 	
 
 }
