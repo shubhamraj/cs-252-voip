@@ -59,7 +59,7 @@ public class CallScreen extends Activity{
 						new OutputStreamWriter(MainActivity.callerSocket.getOutputStream())), true);
 				out.println("Answer");
 				}catch(Exception e){}
-				MainActivity.startCall(RingerServer.callerIP);
+			//	MainActivity.startCall(RingerServer.callerIP);
 			}
 		});
 		
@@ -70,7 +70,7 @@ public class CallScreen extends Activity{
 						new OutputStreamWriter(MainActivity.callerSocket.getOutputStream())), true);
 				out.println("EndCall");
 				}catch(Exception e){}
-				MainActivity.endCall();
+			//	MainActivity.endCall();
 				
 				finish();
 			}
