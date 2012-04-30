@@ -71,6 +71,8 @@ public class CallScreen extends Activity{
 				out.println("EndCall");
 				}catch(Exception e){}
 				MainActivity.endCall();
+				
+				finish();
 			}
 		});
 	}

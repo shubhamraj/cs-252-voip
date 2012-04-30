@@ -51,6 +51,8 @@ public class Recorder implements Runnable {
 			// Read from the microphone
 			recorder.read(buffer, 0, buffer.length);
 		}
+		recorder.stop();
+		recorder.release();
 
 	}
 }

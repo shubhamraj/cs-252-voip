@@ -101,7 +101,7 @@ public class DirectLinkTest extends Activity{
 				t.show();
 				vs = null;
 				vc = null;
-				finish();
+				//finish();
 
 			}
 		});

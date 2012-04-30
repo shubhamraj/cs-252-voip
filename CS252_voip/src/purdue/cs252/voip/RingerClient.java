@@ -44,7 +44,10 @@ public class RingerClient{
 			
 			Log.d("TCP", "C: Sent.");
 			Log.d("TCP", "C: Done.");
-
+			if (callAction.equals("EndCall")){
+				MainActivity.endCall();
+			}
+			
 			// Close the connection
 			clientSocket.close();
 		} catch (UnknownHostException e) {

@@ -72,7 +72,9 @@ public class VoicePlayerServer{
 				// Play the sound
 				player.write(buffer, 0, bufferSize);
 			}
+			
 			player.stop();
+			player.release();
 			
 		}
 	}

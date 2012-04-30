@@ -86,7 +86,7 @@ public class MainActivity extends Activity {
 				//displayFrom(tempName);
 				ringerClient.start(ipAddress, tempName);
 				
-				//MainActivity.startCall(ipAddress);
+				MainActivity.startCall(ipAddress);
 			}
 			
 		});
@@ -114,7 +114,7 @@ public class MainActivity extends Activity {
 	
 	public void onPause(){
 		super.onPause();
-		DirectoryClient.leaveServer();
+		//DirectoryClient.leaveServer();
 	}
 	
 	public String getIpAddress(){
@@ -160,6 +160,8 @@ public class MainActivity extends Activity {
 		btn_quit.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
+				
+				DirectoryClient.leaveServer();	
 				finish();
 				System.exit(0);
 			}
@@ -205,7 +207,7 @@ public class MainActivity extends Activity {
 	static Thread vc;
 	public static void startCall(String toIP){
 		voicePlayer = new VoicePlayerServer(UDP_PORT);
-		voiceCapture = new VoiceCaptureClient(ipAddress, UDP_PORT);
+		voiceCapture = new VoiceCaptureClient(toIP, UDP_PORT);
 		vc = new Thread(voiceCapture);
 		vc.start();
 	}
