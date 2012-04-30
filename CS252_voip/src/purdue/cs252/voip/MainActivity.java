@@ -12,6 +12,7 @@ import purdue.cs252.voip.RingerServer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -49,6 +50,7 @@ public class MainActivity extends Activity {
 	public static String callee;
 	public static String tempName;
 	public static boolean initiatingCall = false;
+	public static boolean chatting = false;
 	
 	String[] values = new String[]{"No Users Present"};
 	public static String ipAddress;
@@ -76,17 +78,9 @@ public class MainActivity extends Activity {
 			public void onItemClick(AdapterView<?> arg0, View view, int pos,
 					long id) {
 				//Toast.makeText(getApplicationContext(), "Click ListItem Number " + pos, Toast.LENGTH_SHORT).show();4
-				ipAddress = DirectoryClient.lookupIp(arg0.getItemAtPosition(pos).toString());
-				callee = arg0.getItemAtPosition(pos).toString();
+				startDialog(arg0,pos);
 				
-				//rserv.SERVERPORT = settings.getPort();
-				Log.d("SERVERIP", ipAddress);
-				RingerClient ringerClient = new RingerClient();
-				tempName = UserOptions.settings.getString("userIdText", null);
-				//displayFrom(tempName);
-				ringerClient.start(ipAddress, tempName);
-				
-				MainActivity.startCall(ipAddress);
+				//MainActivity.startCall(ipAddress);
 			}
 			
 		});
@@ -101,6 +95,45 @@ public class MainActivity extends Activity {
 		
 			
 	}
+	
+	 public void startDialog(AdapterView<?> arg0, final int pos){
+		 
+		 ipAddress = DirectoryClient.lookupIp(((AdapterView<ListAdapter>) arg0).getItemAtPosition(pos).toString());
+		 callee = ((AdapterView<ListAdapter>) arg0).getItemAtPosition(pos).toString();
+		 Log.d("ipAddress", ipAddress);
+		 Log.d("callee", callee);
+		 Log.d("SERVERIP", ipAddress);
+		 tempName = UserOptions.settings.getString("userIdText", null);
+	     
+		 AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
+	     myAlertDialog.setTitle("Make a Selection");
+	     myAlertDialog.setPositiveButton("Call", new DialogInterface.OnClickListener() {
+	        
+	            // do something when the button is clicked
+	            public void onClick(DialogInterface arg0, int arg1) {
+	            	MainActivity.startCall(ipAddress);
+					//displayFrom(tempName);
+					//ringerClient.start(ipAddress, tempName);
+	            }
+	        });
+	     myAlertDialog.setNeutralButton("Chat", new DialogInterface.OnClickListener() {
+	       
+	            // do something when the button is clicked
+	            public void onClick(DialogInterface arg0, int arg1) {
+	            	chatting = true;
+	            	RingerClient ringerClient = new RingerClient();
+	            	ringerClient.start(ipAddress, tempName);
+	            }
+	        });
+	     myAlertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+	       
+	            // do something when the button is clicked
+	            public void onClick(DialogInterface arg0, int arg1) {
+	                Toast.makeText(getApplicationContext(), "'No' button clicked", Toast.LENGTH_LONG).show();
+	            }
+	        });
+	     myAlertDialog.show();
+	    }
 	
 	public void onResume(){
 		super.onResume();

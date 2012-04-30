@@ -14,14 +14,17 @@ import java.net.SocketAddress;
 import java.net.UnknownHostException;
 
 import purdue.cs252.voip.RingerServer;
+import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.TextView;
 
 public class RingerClient{
 	//@Override
-
+	public static SharedPreferences settings;
 	
 	public void start(String ipAddress, String username) {
 		try {
+			Chat c = new Chat();
 			InetAddress serverAddr = InetAddress.getByName(ipAddress);
 
 			// Connect to the server
@@ -37,7 +40,11 @@ public class RingerClient{
 			InputStream stream = clientSocket.getInputStream();
 
 			BufferedReader data = new BufferedReader(new InputStreamReader(stream));
-			
+			if(MainActivity.chatting){
+				String msg = data.readLine();
+				Log.d("receivemsg", msg);
+				c.setText(settings.getString("userIdText", null), msg);
+			}
 			String callAction = data.readLine();
 			
 			Log.d("CallAction", callAction);
